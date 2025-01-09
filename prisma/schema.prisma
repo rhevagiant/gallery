@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  UserID        Int       @id @default(autoincrement())
+  Username      String    @unique
+  Password      String
+  Email         String    @unique
+  NamaLengkap   String
+  Alamat        String?
+  Albums        Album[]   @relation("UserAlbums")
+  Photos        Foto[]    @relation("UserPhotos")
+  Comments      KomentarFoto[]
+  Likes         LikeFoto[]
+}
+
+model Album {
+  AlbumID      Int       @id @default(autoincrement())
+  NamaAlbum    String
+  Deskripsi    String?
+  TanggalDibuat DateTime @default(now())
+  UserID       Int
+  User         User      @relation("UserAlbums", fields: [UserID], references: [UserID])
+  Photos       Foto[]
+}
+
+model Foto {
+  FotoID       Int       @id @default(autoincrement())
+  JudulFoto    String
+  DeskripsiFoto String?
+  TanggalUnggah DateTime @default(now())
+  LokasiFile   String
+  AlbumID      Int
+  UserID       Int
+  Album        Album     @relation(fields: [AlbumID], references: [AlbumID])
+  User         User      @relation("UserPhotos", fields: [UserID], references: [UserID])
+  Comments     KomentarFoto[]
+  Likes        LikeFoto[]
+}
+
+model KomentarFoto {
+  KomentarID     Int       @id @default(autoincrement())
+  FotoID         Int
+  UserID         Int
+  IsiKomentar    String
+  TanggalKomentar DateTime @default(now())
+  Foto           Foto      @relation(fields: [FotoID], references: [FotoID])
+  User           User      @relation(fields: [UserID], references: [UserID])
+}
+
+model LikeFoto {
+  LikeID         Int       @id @default(autoincrement())
+  FotoID         Int
+  UserID         Int
+  TanggalLike    DateTime @default(now())
+  Foto           Foto      @relation(fields: [FotoID], references: [FotoID])
+  User           User      @relation(fields: [UserID], references: [UserID])
+}
