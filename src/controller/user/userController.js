@@ -51,10 +51,13 @@ exports.loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid password" });
     }
 
-    req.session.UserID = user.id; // Set UserID ke session
-    req.session.Username = user.Username;
+    console.log('Menyimpan UserID ke sesi:', user.UserID);
+    req.session.UserID = user.UserID;
+    req.session.Username = user.Username; 
+    await req.session.save(); 
+    
 
-    console.log('Session setelah login:', req.session);
+    console.log('Session setelah login:', req.session); 
 
     res.status(200).json({
       message: "Login successful",
@@ -65,6 +68,8 @@ exports.loginUser = async (req, res) => {
         nama: user.NamaLengkap,
       },
     });
+
+    console.log('Session sesudah login:', req.session); 
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

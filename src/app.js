@@ -4,7 +4,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/user/userRoutes');
 const fotoRoutes = require('./routes/foto/fotoRoutes');
-const { createAlbum } = require('./controller/album/albumController');
+const albumRoutes = require('./routes/album/albumRoutes');
 const userAuth = require('./middleware/auth/authMiddleware');
 
 const app = express();
@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/users', userRoutes);
 app.use('/foto', fotoRoutes);
-app.use('/album', createAlbum);
+app.use('/album', albumRoutes);
 
 app.use(userAuth); 
 
