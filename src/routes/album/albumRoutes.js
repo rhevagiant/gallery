@@ -4,11 +4,8 @@ const userAuth = require('../../middleware/auth/authMiddleware');
 
 const router = express.Router();
 
-const authRoutes = express.Router();
-
-router.get('/allAlbum', getAllAlbums);
+router.get('/allAlbum', userAuth, getAllAlbums);
 router.post('/addAlbum', userAuth, createAlbum);
 
-authRoutes.use(userAuth);
 
 module.exports = router;
