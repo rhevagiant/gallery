@@ -1,10 +1,14 @@
 const express = require('express');
-const { createAlbum } = require('../../controller/album/albumController');
+const { createAlbum, getAllAlbums } = require('../../controller/album/albumController');
 const userAuth = require('../../middleware/auth/authMiddleware');
 
 const router = express.Router();
 
-// Hanya pengguna yang login yang bisa membuat album
+const authRoutes = express.Router();
+
+router.get('/allAlbum', getAllAlbums);
 router.post('/addAlbum', userAuth, createAlbum);
+
+authRoutes.use(userAuth);
 
 module.exports = router;

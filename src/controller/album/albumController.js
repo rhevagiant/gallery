@@ -29,5 +29,25 @@ const createAlbum = async (req, res) => {
   }
 };
 
+const getAllAlbums = async (req, res) => {
+  try {
+    const albums = await prisma.album.findMany({
+      include: {
+        User: {
+          select: { NamaLengkap: true }, // Menampilkan nama pemilik album
+        },
+      },
+    });
 
-module.exports = { createAlbum };
+    res.status(200).json({
+      message: 'Semua album berhasil diambil.',
+      data: albums,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+
+module.exports = { createAlbum, getAllAlbums };
