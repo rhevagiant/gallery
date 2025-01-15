@@ -72,54 +72,30 @@ const createFoto = async (req, res) => {
   }
 };
 
-
-const updatePhotoAlbum = async (req, res) => {
+const deletePhoto = async (req, res) => {
   try {
-    const { AlbumID, NamaAlbum, Deskripsi } = req.body;
-    const FotoID = parseInt(req.params.id); // Mengambil FotoID dari parameter URL dan memastikan dalam format integer
-    const userId = req.user?.UserID;
+    const { id } = req.params; // Ambil FotoID dari parameter URL
+    const userId = req.user?.UserID; // Ambil UserID dari session
 
     if (!userId) {
-      return res.status(400).json({ error: 'UserID tidak ditemukan. Pastikan Anda login.' });
+      return res.status(401).json({ error: 'UserID tidak ditemukan. Pastikan Anda login.' });
     }
 
-    // Cek apakah FotoID valid
-    if (!FotoID) {
-      return res.status(400).json({ error: 'FotoID tidak ditemukan.' });
-    }
-
-    // Cek apakah foto ada dan milik pengguna yang sedang login
+    // Cari foto berdasarkan FotoID dan UserID
     const foto = await prisma.foto.findUnique({
-      where: { FotoID: FotoID },
+      where: { FotoID: parseInt(id) },
     });
 
     if (!foto || foto.UserID !== userId) {
       return res.status(404).json({ error: 'Foto tidak ditemukan atau Anda tidak memiliki akses.' });
     }
 
-    // Jika NamaAlbum diberikan, buat album baru
-    let targetAlbumID = AlbumID;
-    if (NamaAlbum) {
-      const newAlbum = await prisma.album.create({
-        data: {
-          NamaAlbum,
-          Deskripsi: Deskripsi || null,
-          UserID: userId,
-        },
-      });
-      targetAlbumID = newAlbum.AlbumID;
-    }
-
-    // Update album foto
-    const updatedPhoto = await prisma.foto.update({
-      where: { FotoID: FotoID },
-      data: { AlbumID: targetAlbumID },
+    // Hapus foto
+    await prisma.foto.delete({
+      where: { FotoID: parseInt(id) },
     });
 
-    res.status(200).json({
-      message: 'Foto berhasil diperbarui.',
-      data: updatedPhoto,
-    });
+    res.status(200).json({ message: 'Foto berhasil dihapus.' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -127,5 +103,4 @@ const updatePhotoAlbum = async (req, res) => {
 
 
 
-
-module.exports = { createFoto, getAllPhotos, updatePhotoAlbum };
+module.exports = { createFoto, getAllPhotos, deletePhoto };

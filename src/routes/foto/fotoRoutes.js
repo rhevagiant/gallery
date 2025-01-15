@@ -1,5 +1,5 @@
 const express = require('express');
-const { createFoto, getAllPhotos, updatePhotoAlbum } = require('../../controller/foto/fotoController');
+const { createFoto, getAllPhotos, deletePhoto } = require('../../controller/foto/fotoController');
 const upload = require('../../middleware/upload');
 const userAuth = require('../../middleware/auth/authMiddleware')
 
@@ -9,7 +9,8 @@ const authRoutes = express.Router();
 
 router.get('/allPhotos', userAuth, getAllPhotos)
 router.post('/uploadPhoto', upload.single('image'), userAuth, createFoto);
-router.put('/editPhoto/:id', userAuth, updatePhotoAlbum);
+router.delete('/deletePhoto/:id', userAuth, deletePhoto);
+
 
 authRoutes.use(userAuth);
 
