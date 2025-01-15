@@ -12,7 +12,7 @@ const getAllPhotos = async (req, res) => {
     const photos = await prisma.foto.findMany({
       where: { UserID: userId },
       include: {
-        Album: true, // Menyertakan informasi album
+        Album: true, 
       },
     });
 
@@ -28,14 +28,13 @@ const getAllPhotos = async (req, res) => {
 const createFoto = async (req, res) => {
   try {
     const { JudulFoto, DeskripsiFoto, AlbumID } = req.body;
-    const LokasiFile = req.file.path; // URL gambar dari Cloudinary
+    const LokasiFile = req.file.path; 
     const userId = req.user?.UserID;
 
     if (!userId) {
       return res.status(400).json({ error: 'UserID tidak ditemukan. Pastikan Anda login.' });
     }
 
-    // Jika AlbumID tidak diberikan, cari album default
     let albumIdToUse = AlbumID;
 
     if (!AlbumID) {
@@ -51,7 +50,6 @@ const createFoto = async (req, res) => {
       albumIdToUse = defaultAlbum.AlbumID;
     }
 
-    // Buat entri baru untuk Foto
     const foto = await prisma.foto.create({
       data: {
         JudulFoto,
@@ -74,14 +72,13 @@ const createFoto = async (req, res) => {
 
 const deletePhoto = async (req, res) => {
   try {
-    const { id } = req.params; // Ambil FotoID dari parameter URL
-    const userId = req.user?.UserID; // Ambil UserID dari session
+    const { id } = req.params; 
+    const userId = req.user?.UserID; 
 
     if (!userId) {
       return res.status(401).json({ error: 'UserID tidak ditemukan. Pastikan Anda login.' });
     }
 
-    // Cari foto berdasarkan FotoID dan UserID
     const foto = await prisma.foto.findUnique({
       where: { FotoID: parseInt(id) },
     });
@@ -90,7 +87,6 @@ const deletePhoto = async (req, res) => {
       return res.status(404).json({ error: 'Foto tidak ditemukan atau Anda tidak memiliki akses.' });
     }
 
-    // Hapus foto
     await prisma.foto.delete({
       where: { FotoID: parseInt(id) },
     });

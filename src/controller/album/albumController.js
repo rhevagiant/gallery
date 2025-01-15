@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 const createAlbum = async (req, res) => {
   try {
-    console.log('User dari middleware:', req.user); // Log user dari middleware
+    console.log('User dari middleware:', req.user); 
     const { NamaAlbum, Deskripsi } = req.body;
     const userId = req.user?.UserID;
 
@@ -34,7 +34,7 @@ const getAllAlbums = async (req, res) => {
     const albums = await prisma.album.findMany({
       include: {
         User: {
-          select: { NamaLengkap: true }, // Menampilkan nama pemilik album
+          select: { NamaLengkap: true }, 
         },
       },
     });
@@ -89,7 +89,6 @@ const updateAlbum = async (req, res) => {
       return res.status(401).json({ error: 'UserID tidak ditemukan. Pastikan Anda login.' });
     }
 
-    // Cari album berdasarkan AlbumID dan UserID
     const album = await prisma.album.findUnique({
       where: { AlbumID: parseInt(id) },
     });
@@ -98,7 +97,6 @@ const updateAlbum = async (req, res) => {
       return res.status(404).json({ error: 'Album tidak ditemukan atau Anda tidak memiliki akses.' });
     }
 
-    // Update album
     const updatedAlbum = await prisma.album.update({
       where: { AlbumID: parseInt(id) },
       data: {

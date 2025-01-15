@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient(); 
+
 const userAuth = async (req, res, next) => {
   // console.log('Session di middleware:', req.session); // Debugging
   if (req.session && req.session.UserID) {

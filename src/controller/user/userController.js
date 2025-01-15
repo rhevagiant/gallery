@@ -2,7 +2,6 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
 
-// Get all users
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await prisma.user.findMany();
@@ -12,7 +11,7 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-// Create a new user
+
 exports.createUser = async (req, res) => {
   const { username, email, password, nama } = req.body;
   try {
@@ -36,7 +35,6 @@ exports.createUser = async (req, res) => {
   }
 };
 
-// Login user
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -76,7 +74,6 @@ exports.loginUser = async (req, res) => {
 };
 
 
-// Logout user
 exports.logout = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
