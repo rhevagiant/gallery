@@ -3,15 +3,14 @@ const prisma = new PrismaClient();
 
 const addCommentToPhoto = async (req, res) => {
   try {
-    const { id } = req.params; // FotoID dari URL
-    const { IsiKomentar } = req.body; // Isi komentar dari body
-    const userId = req.user?.UserID; // UserID dari session/login
+    const { id } = req.params; 
+    const { IsiKomentar } = req.body; 
+    const userId = req.user?.UserID; 
 
     if (!userId) {
       return res.status(401).json({ error: 'UserID tidak ditemukan. Pastikan Anda login.' });
     }
 
-    // Pastikan FotoID valid dan ada di database
     const foto = await prisma.foto.findUnique({
       where: { FotoID: parseInt(id) },
     });
@@ -20,7 +19,6 @@ const addCommentToPhoto = async (req, res) => {
       return res.status(404).json({ error: 'Foto tidak ditemukan.' });
     }
 
-    // Tambahkan komentar ke foto
     const komentar = await prisma.komentarFoto.create({
       data: {
         FotoID: parseInt(id),
@@ -43,9 +41,8 @@ const addCommentToPhoto = async (req, res) => {
 
 const getCommentsByPhoto = async (req, res) => {
   try {
-    const { id } = req.params; // FotoID dari URL
+    const { id } = req.params; 
 
-    // Pastikan FotoID valid dan foto ada di database
     const foto = await prisma.foto.findUnique({
       where: { FotoID: parseInt(id) },
     });
@@ -54,11 +51,11 @@ const getCommentsByPhoto = async (req, res) => {
       return res.status(404).json({ error: 'Foto tidak ditemukan.' });
     }
 
-    // Ambil komentar terkait dengan FotoID
+ 
     const komentar = await prisma.komentarFoto.findMany({
       where: { FotoID: parseInt(id) },
       include: {
-        User: { select: { NamaLengkap: true, Username: true } }, // Menampilkan nama user yang berkomentar
+        User: { select: { NamaLengkap: true, Username: true } }, 
       },
     });
 
@@ -71,6 +68,40 @@ const getCommentsByPhoto = async (req, res) => {
   }
 };
 
+const deleteComment = async (req, res) => {
+  try {
+    const { id } = req.params; // KomentarID dari URL
+    const userId = req.user?.UserID;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'UserID tidak ditemukan. Pastikan Anda login.' });
+    }
+
+    const komentar = await prisma.komentarFoto.findUnique({
+      where: { KomentarID: parseInt(id) },
+    });
+
+    if (!komentar) {
+      return res.status(404).json({ error: 'Komentar tidak ditemukan.' });
+    }
+
+    if (komentar.UserID !== userId) {
+      return res.status(403).json({ error: 'Anda tidak memiliki izin untuk menghapus komentar ini.' });
+    }
+
+    await prisma.komentarFoto.delete({
+      where: { KomentarID: parseInt(id) },
+    });
+
+    res.status(200).json({
+      message: 'Komentar berhasil dihapus.',
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 
-module.exports = { addCommentToPhoto, getCommentsByPhoto };
+
+
+module.exports = { addCommentToPhoto, getCommentsByPhoto, deleteComment };
