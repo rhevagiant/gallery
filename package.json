@@ -15,6 +15,7 @@
     "bcrypt": "^5.1.1",
     "cloudinary": "^1.41.3",
     "connect-session-sequelize": "^7.1.7",
+    "cors": "^2.8.5",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "multer": "^1.4.5-lts.1",
@@ -25,4 +26,5 @@
     "nodemon": "^3.1.9",
     "prisma": "^6.2.1"
   }
+  
 }

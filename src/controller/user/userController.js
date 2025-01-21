@@ -37,6 +37,7 @@ exports.createUser = async (req, res) => {
 
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
+  console.log("hallo",email,password);
 
   try {
     const user = await prisma.user.findUnique({ where: { Email: email } });
@@ -51,11 +52,11 @@ exports.loginUser = async (req, res) => {
 
     console.log('Menyimpan UserID ke sesi:', user.UserID);
     req.session.UserID = user.UserID;
-    req.session.Username = user.Username; 
-    await req.session.save(); 
-    
+    req.session.Username = user.Username;
+    await req.session.save();
 
-    console.log('Session setelah login:', req.session); 
+
+    console.log('Session setelah login:', req.session);
 
     res.status(200).json({
       message: "Login successful",
@@ -67,7 +68,7 @@ exports.loginUser = async (req, res) => {
       },
     });
 
-    console.log('Session sesudah login:', req.session); 
+    console.log('Session sesudah login:', req.session);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
