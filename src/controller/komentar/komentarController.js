@@ -38,7 +38,6 @@ const addCommentToPhoto = async (req, res) => {
 };
 
 
-
 const getCommentsByPhoto = async (req, res) => {
   try {
     const { id } = req.params; 

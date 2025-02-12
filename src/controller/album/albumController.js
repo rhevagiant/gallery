@@ -29,6 +29,33 @@ const createAlbum = async (req, res) => {
   }
 };
 
+const getAlbumByID = async (req, res) => {
+  const AlbumID = parseInt(req.params.id, 10);
+
+  if (isNaN(AlbumID)) {
+    return res.status(400).json({ error: 'Invalid album ID' });
+  }
+
+  try {
+    // Query untuk mendapatkan album beserta foto-fotonya
+    const album = await prisma.album.findUnique({
+      where: { AlbumID: AlbumID },  // Use AlbumID instead of id
+      include: {
+        Photos: true, // Assuming there is a 'photos' relation in the album model
+      },
+    });
+
+    if (!album) {
+      return res.status(404).json({ error: 'Album not found' });
+    }
+
+    res.status(200).json(album);
+  } catch (error) {
+    console.error('Error fetching album:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 const getAllAlbums = async (req, res) => {
   try {
     const albums = await prisma.album.findMany({
@@ -117,4 +144,4 @@ const updateAlbum = async (req, res) => {
 
 
 
-module.exports = { createAlbum, getAllAlbums, deleteAlbum, updateAlbum };
+module.exports = { createAlbum, getAlbumByID, getAllAlbums, deleteAlbum, updateAlbum };

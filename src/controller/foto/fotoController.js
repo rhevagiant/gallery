@@ -4,7 +4,6 @@ const prisma = new PrismaClient();
 const getAllPhotos = async (req, res) => {
   try {
     const userId = req.user?.UserID;
-
     if (!userId) {
       return res.status(400).json({ error: 'UserID tidak ditemukan. Pastikan Anda login.' });
     }
@@ -18,7 +17,7 @@ const getAllPhotos = async (req, res) => {
 
     res.status(200).json({
       message: 'Semua foto berhasil diambil.',
-      data: photos,
+      data: photos,  // Pastikan struktur ini benar
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -27,6 +26,7 @@ const getAllPhotos = async (req, res) => {
 
 const createFoto = async (req, res) => {
   try {
+    console.log(req.file, req.body); 
     const { JudulFoto, DeskripsiFoto, AlbumID } = req.body;
     const LokasiFile = req.file.path; 
     const userId = req.user?.UserID;

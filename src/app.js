@@ -47,7 +47,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/auth', userRoutes);
-app.use('/foto', fotoRoutes);
+app.use('/photo', fotoRoutes);
 app.use('/album', albumRoutes);
 // app.use('/komentar', komentarRoutes)
 
