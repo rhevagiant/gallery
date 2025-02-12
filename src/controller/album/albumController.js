@@ -75,6 +75,33 @@ const getAllAlbums = async (req, res) => {
   }
 };
 
+const getAlbumsByUserID = async (req, res) => {
+  try {
+    const userId = req.user?.UserID;
+    
+    if (!userId) {
+      return res.status(401).json({ error: 'UserID tidak ditemukan. Pastikan Anda login.' });
+    }
+
+    const albums = await prisma.album.findMany({
+      where: { UserID: userId },
+      include: {
+        User: {
+          select: { NamaLengkap: true },
+        },
+      },
+    });
+
+    res.status(200).json({
+      message: 'Album pengguna berhasil diambil.',
+      data: albums,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 const deleteAlbum = async (req, res) => {
   try {
     const { id } = req.params; 
@@ -144,4 +171,4 @@ const updateAlbum = async (req, res) => {
 
 
 
-module.exports = { createAlbum, getAlbumByID, getAllAlbums, deleteAlbum, updateAlbum };
+module.exports = { createAlbum, getAlbumByID, getAllAlbums, getAlbumsByUserID, deleteAlbum, updateAlbum };
