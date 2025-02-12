@@ -66,6 +66,30 @@ const likePhoto = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   };
+
+  const getLikedPhotos = async (req, res) => {
+    try {
+        const userId = req.user?.UserID;
+
+        if (!userId) {
+            return res.status(401).json({ error: 'UserID tidak ditemukan. Pastikan Anda login.' });
+        }
+
+        const likedPhotos = await prisma.likeFoto.findMany({
+            where: { UserID: userId },
+            include: {
+                Foto: true, // Mengambil data foto yang di-like
+            },
+        });
+
+        res.status(200).json({
+            message: 'Foto yang di-like berhasil diambil.',
+            data: likedPhotos.map(like => like.Foto),
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
   
   
-module.exports={ likePhoto, getLikesByPhoto };
+module.exports={ likePhoto, getLikesByPhoto, getLikedPhotos };

@@ -13,25 +13,32 @@ exports.getAllUsers = async (req, res) => {
 
 
 exports.createUser = async (req, res) => {
-  const { username, email, password, nama } = req.body;
+  const { username, email, password, namaLengkap } = req.body;
+
   try {
+    // Cek apakah email sudah terdaftar
     const existingUser = await prisma.user.findUnique({ where: { Email: email } });
     if (existingUser) {
       return res.status(400).json({ error: "Email already exists" });
     }
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Simpan ke database
     const newUser = await prisma.user.create({
       data: {
         Username: username,
         Email: email,
         Password: hashedPassword,
-        NamaLengkap: nama,
+        NamaLengkap: namaLengkap,
       },
     });
-    res.status(201).json({ message: "User created", user: newUser });
+
+    res.status(201).json({ message: "User created successfully", user: newUser });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(error); // Log error untuk debugging
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

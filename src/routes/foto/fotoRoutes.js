@@ -3,7 +3,7 @@ const { createFoto, getAllPhotos, deletePhoto } = require('../../controller/foto
 const upload = require('../../middleware/upload');
 const userAuth = require('../../middleware/auth/authMiddleware');
 const { addCommentToPhoto, getCommentsByPhoto, deleteComment } = require('../../controller/komentar/komentarController');
-const { likePhoto, getLikesByPhoto } = require('../../controller/like/likeController');
+const { likePhoto, getLikesByPhoto, getLikedPhotos } = require('../../controller/like/likeController');
 
 const router = express.Router();
 
@@ -21,6 +21,7 @@ router.delete('/:id/deleteComment', userAuth, deleteComment); //id nya si koment
 //like
 router.post('/:id/like', userAuth, likePhoto);
 router.get('/:id/allLikes', userAuth, getLikesByPhoto);
+router.get('/liked-photos', userAuth, getLikedPhotos);
 
 authRoutes.use(userAuth);
 
